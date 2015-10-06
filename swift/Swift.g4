@@ -94,7 +94,7 @@ switch_statement : 'switch' expression '{' switch_cases? '}'  ;
 switch_cases : switch_case switch_cases? ;
 switch_case : case_label statements | default_label statements  | case_label ';' | default_label ';'  ;
 case_label : 'case' case_item_list ':' ;
-case_item_list : pattern guard_clause?  pattern guard_clause?',' case_item_list  ;
+case_item_list : pattern guard_clause? | pattern guard_clause? ',' case_item_list  ;
 default_label : 'default' ':' ;
 guard_clause : 'where' guard_expression ;
 guard_expression : expression  ;
@@ -206,7 +206,7 @@ variable_name : identifier  ;
 getter_setter_block : '{' getter_clause setter_clause?'}'  | '{' setter_clause getter_clause '}'  ;
 getter_clause : attributes? 'get' code_block  ;
 setter_clause : attributes? 'set' setter_name? code_block  ;
-setter_name : ( identifier )  ;
+setter_name : '(' identifier ')'  ;
 getter_setter_keyword_block : '{' getter_keyword_clause setter_keyword_clause?'}' | '{' setter_keyword_clause getter_keyword_clause '}'  ;
 getter_keyword_clause : attributes? 'get'  ;
 setter_keyword_clause : attributes? 'set'  ;
@@ -760,7 +760,7 @@ Identifier : Identifier_head Identifier_characters?
 
 identifier_list : identifier | identifier ',' identifier_list  ;
 
-fragment Identifier_head : [a-zA-Z]
+fragment Identifier_head : [a-zA-Z_]
  | '\u00A8' | '\u00AA' | '\u00AD' | '\u00AF' | [\u00B2-\u00B5] | [\u00B7-\u00BA]
  | [\u00BC-\u00BE] | [\u00C0-\u00D6] | [\u00D8-\u00F6] | [\u00F8-\u00FF]
  | [\u0100-\u02FF] | [\u0370-\u167F] | [\u1681-\u180D] | [\u180F-\u1DBF]
@@ -830,14 +830,14 @@ Floating_point_literal
 fragment Decimal_fraction : '.' Decimal_literal ;
 fragment Decimal_exponent : Floating_point_e Sign? Decimal_literal ;
 fragment Hexadecimal_fraction : '.' Hexadecimal_literal? ;
-fragment Hexadecimal_exponent : Floating_point_p Sign? Hexadecimal_literal ;
+fragment Hexadecimal_exponent : Floating_point_p Sign? Decimal_literal ;
 fragment Floating_point_e : [eE] ;
 fragment Floating_point_p : [pP] ;
 fragment Sign : [+\-] ;
 
 // GRAMMAR OF A STRING LITERAL
 
-String_literal : '"' Quoted_text '"' ;
+String_literal : '"' Quoted_text? '"' ;
 fragment Quoted_text : Quoted_text_item Quoted_text? ;
 fragment Quoted_text_item : Escaped_character
 // | '\\(' expression ')'
